@@ -1,4 +1,4 @@
-import  express  from "express"; 
+import  express, { NextFunction, Request, Response }  from "express"; 
 
 //import { Request,Response,NextFunction } from "express";
 import { pingHandle } from "../controllers/ping.controller";
@@ -21,7 +21,17 @@ function middleware2(req:Request,res:Response,next:NextFunction){
 
 
 // we are using controller , so router.get -> controller func.
-pingRouter.get('/',pingHandle);
+// pingRouter.get('/:userid/something',pingHandle);
+
+
+function checkHandler(req:Request,res:Response,next:NextFunction) :void{
+    if(typeof req.body.name  !== 'string'){
+        res.status(400).send("Bad Req");
+    }
+    next();
+}
+
+pingRouter.get('/',checkHandler,pingHandle);
 
 pingRouter.post('/handle',(req,res)=>{
     res.send('helpping')
