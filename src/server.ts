@@ -1,5 +1,4 @@
 import express from "express";
-
 import { serverConfig } from "./config";
 //import { pingHandle } from "./controllers/ping.controller";
 import  pingRouter  from "./router/ping.router";
@@ -7,6 +6,9 @@ import v1Router from "./router/v1";
 import v2Router from "./router/v2";
 import { genericErrorHandler } from "./middlewares/error.middleware";
 //import { z } from "zod";
+import logger from "./config/logger.config";
+import { attachCorrelationIdMiddleware } from "./middlewares/correlation.middleware";
+
 const app = express();
 
 
@@ -16,7 +18,7 @@ app.use(express.json());  // acts like a middleware if it recieves a json then i
 app.use(express.text());  // acts like a middleware if it recieves a text then it is going to parse it
 app.use(express.urlencoded());  // acts like a middleware if it recieves a url-encoded data then it is going to parse it
 
-
+app.use(attachCorrelationIdMiddleware);
 
 // for routing we are using app.use
 app.use("/ping",pingRouter);  // routing function       
@@ -30,7 +32,9 @@ app.use(genericErrorHandler)
 
 app.listen(serverConfig.PORT, () => {
   console.log(`Server is running on http://localhost:${serverConfig.PORT}`);
-  console.log(`Press Ctrl+C to stop the server`);
+  logger.info(`Press Ctrl+C to stop the server`,{"name":"dev server"});
+
+
 
   // const obj = {
   //   "name":"trishit",

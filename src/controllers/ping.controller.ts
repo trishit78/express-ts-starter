@@ -2,6 +2,7 @@ import { NextFunction, Request,Response } from "express";
 
 import fs from "fs/promises";
 import { NotFoundError } from "../utils/errors/app.error";
+import logger from "../config/logger.config";
 
 // export const pingHandler = (req:Request,res:Response,next:NextFunction)=>{
 //     // console.log('hello ping pong')
@@ -42,6 +43,7 @@ import { NotFoundError } from "../utils/errors/app.error";
 export const pingHandler = async (req:Request,res:Response,next:NextFunction)=>{
     // if the fs throws error then it will go to app.use(genericErrorHandler) -> custom error handler
     try {
+        logger.info("ping request recieved");
         await fs.readFile("sample");
         res.status(200).json({message:"Pong!"});
     } catch (error) {
