@@ -1,7 +1,9 @@
-import  express, { NextFunction, Request, Response }  from "express"; 
+import  express, {  Request, Response }  from "express"; 
 
 //import { Request,Response,NextFunction } from "express";
-import { pingHandle } from "../controllers/ping.controller";
+import { pingHandler } from "../controllers/ping.controller";
+  import { validateRequestBody } from "../validators";
+ import { pingSchema } from "../validators/ping.validator";
 
 const pingRouter = express.Router();
 
@@ -23,18 +25,25 @@ function middleware2(req:Request,res:Response,next:NextFunction){
 // we are using controller , so router.get -> controller func.
 // pingRouter.get('/:userid/something',pingHandle);
 
-
-function checkHandler(req:Request,res:Response,next:NextFunction) :void{
+/**
+ * function checkHandler(req:Request,res:Response,next:NextFunction) :void{
     if(typeof req.body.name  !== 'string'){
         res.status(400).send("Bad Req");
     }
     next();
 }
+ * 
+ */
 
-pingRouter.get('/',checkHandler,pingHandle);
 
-pingRouter.post('/handle',(req,res)=>{
-    res.send('helpping')
+
+pingRouter.post('/',validateRequestBody(pingSchema),pingHandler);
+
+
+// pingRouter.get('/',pingHandler);
+
+pingRouter.post('/handle',(req:Request,res:Response)=>{
+    res.send('helping')
 })
 
 

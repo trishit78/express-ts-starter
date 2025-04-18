@@ -5,20 +5,28 @@ import { serverConfig } from "./config";
 import  pingRouter  from "./router/ping.router";
 import v1Router from "./router/v1";
 import v2Router from "./router/v2";
+import { genericErrorHandler } from "./middlewares/error.middleware";
 //import { z } from "zod";
 const app = express();
 
+
+// here before the req, we are parsing it
 
 app.use(express.json());  // acts like a middleware if it recieves a json then it is going to parse it
 app.use(express.text());  // acts like a middleware if it recieves a text then it is going to parse it
 app.use(express.urlencoded());  // acts like a middleware if it recieves a url-encoded data then it is going to parse it
 
-// for routing we are using app.use
 
+
+// for routing we are using app.use
 app.use("/ping",pingRouter);  // routing function       
 app.use("/api/v1",v1Router);  // routing function
 app.use("/api/v2",v2Router);  // routing function
 
+
+
+// after all the requests gets handled then then this custom err handler works
+app.use(genericErrorHandler)
 
 app.listen(serverConfig.PORT, () => {
   console.log(`Server is running on http://localhost:${serverConfig.PORT}`);
